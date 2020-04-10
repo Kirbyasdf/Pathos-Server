@@ -3,25 +3,21 @@ const express = require("express");
 const userRoutes = require("./routes/user.routes.js");
 const messageRoutes = require("./routes/message.routes.js");
 const socketio = require("socket.io");
+
 const PORT = process.env.PORT || 4000;
 
 const app = express();
 app.use(express.json());
-
 app.use("/users", userRoutes);
 app.use("/messages", messageRoutes);
-
 const server = app.listen(PORT, () =>
   console.log("GOOD 2 GO on PORT: " + PORT)
 );
 
-// const io = socketio(server);
+const io = socketio(server);
+const chatroomSockets = require("./sockets/chatroom.sockets.js")(io);
 
-// const chatroomSockets = require("./sockets/chatroom.sockets.js")(io);
-
-// Handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
   console.error(`ERR: ` + err.message);
-  // Close server & exit process
-  server.close(() => process.exit(1)); //pass 1 to exit with failure
+  server.close(() => process.exit(1));
 });
