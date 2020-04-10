@@ -1,23 +1,23 @@
 require("dotenv").config();
 const express = require("express");
-const pool = require("./db/dbConnection.js");
-const queryRunner = require("./db/queryRunner.js");
-const db = new queryRunner(pool);
+const userRoutes = require("./routes/user.routes.js");
+const messageRoutes = require("./routes/message.routes.js");
+const socketio = require("socket.io");
 const PORT = process.env.PORT || 4000;
 
 const app = express();
 app.use(express.json());
 
-app.get("/test", async (req, res, next) => {
-  try {
-    const dbRes = await db.test();
-    res.status(200).json({ response: dbRes.rows });
-  } catch (err) {
-    console.error(err);
-  }
-});
+app.use("/users", userRoutes);
+app.use("/messages", messageRoutes);
 
-app.listen(PORT, () => console.log("GOOD 2 GO on PORT: " + PORT));
+const server = app.listen(PORT, () =>
+  console.log("GOOD 2 GO on PORT: " + PORT)
+);
+
+// const io = socketio(server);
+
+// const chatroomSockets = require("./sockets/chatroom.sockets.js")(io);
 
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
