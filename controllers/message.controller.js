@@ -1,6 +1,6 @@
-const pool = require("../db/dbConnection.js");
+// const pool = require("../db/dbConnection.js");
 const queryRunner = require("../db/queryRunner.js");
-const db = new queryRunner(pool);
+const db = new queryRunner();
 
 test = async (req, res, next) => {
   try {
