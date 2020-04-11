@@ -11,4 +11,14 @@ test = async (req, res, next) => {
   }
 };
 
-module.exports = { test };
+loadMessageLog = async (req, res, next) => {
+  const { chatroom_id } = req.params;
+  try {
+    const dbRes = await db.loadMessageLog(chatroom_id);
+    res.status(200).json(dbRes.rows);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+module.exports = { test, loadMessageLog };

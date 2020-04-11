@@ -13,10 +13,13 @@ test = async (req, res, next) => {
 
 defaultUser = async (req, res, next) => {
   const { userCall } = req.params;
+
   const userName = userCall === "1" ? "default user 1" : "default user 2";
+
   try {
     const dbRes = await db.loadUserByUsername(userName);
     const user = dbRes.rows[0];
+    console.log(user);
     res.status(200).json(user);
   } catch (err) {
     console.error(err);
