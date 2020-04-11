@@ -30,6 +30,21 @@ CREATE TABLE chatroom_user_join_table(
     chatroom_table TEXT NOT NULL
 );
 
+
+///DEFAULT CHATROOM
+INSERT INTO chatroom_table(name) VALUES('default chatroom');
+
+
+/// DEFAULT USER TESTING
+INSERT INTO user_table(username) VALUES('default user 1');
+INSERT INTO user_table(username) VALUES('default user 2');
+
+
+
+
+
+
+/// RELATIONSHIP TESTING 
 INSERT INTO chatroom_table(name) VALUES('test room');
 
 INSERT INTO chatroom_table(name) VALUES('test room 2');

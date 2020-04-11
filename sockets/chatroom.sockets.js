@@ -4,10 +4,8 @@ const chatRoomSockets = (io) => {
     socket.on("disconnect", () => {
       console.log("connection terminated");
     });
-
     socket.on("sendMessage", async (message, callback) => {
       console.log(message);
-
       socket.emit("message", message);
       callback();
     });

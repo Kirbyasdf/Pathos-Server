@@ -11,6 +11,19 @@ class queryRunner {
       [content, user_id, chatroom_id]
     );
   }
+
+  loadUserByUsername(user) {
+    return this.db.query(
+      "SELECT * FROM user_table WHERE user_table.username=$1",
+      [user]
+    );
+  }
+
+  loadDefaultChatroom() {
+    return this.db.query(
+      "SELECT * FROM chatroom_table WHERE chatroom_table.name='default chatroom'"
+    );
+  }
 }
 
 module.exports = queryRunner;
