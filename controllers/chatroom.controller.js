@@ -13,6 +13,7 @@ test = async (req, res, next) => {
 
 loadDefaultChatroom = async (req, res, next) => {
   try {
+    console.log("hit");
     const dbRes = await db.loadDefaultChatroom();
     const chatroom = dbRes.rows[0];
     res.status(200).json(chatroom);

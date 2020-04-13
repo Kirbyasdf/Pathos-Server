@@ -19,7 +19,6 @@ defaultUser = async (req, res, next) => {
   try {
     const dbRes = await db.loadUserByUsername(userName);
     const user = dbRes.rows[0];
-    console.log(user);
     res.status(200).json(user);
   } catch (err) {
     console.error(err);
