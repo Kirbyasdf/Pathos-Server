@@ -25,4 +25,28 @@ defaultUser = async (req, res, next) => {
   }
 };
 
+userLogin = async (req, res, next) => {
+  const { userInfo } = req.params;
+
+  try {
+    const dbRes = await db.loadUserByUsername(userInfo.username)
+    const user = dbRes.rows[0];
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+userSignup = async (req, res, next) => {
+  const { userInfo } = req.params;
+
+  try {
+    const dbRes = await db.createNewUser(userInfo.username)
+    const user = dbRes.rows[0];
+    res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 module.exports = { test, defaultUser };

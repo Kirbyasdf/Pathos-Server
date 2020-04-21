@@ -31,6 +31,13 @@ class queryRunner {
       "SELECT * FROM chatroom_table WHERE chatroom_table.name='default chatroom'"
     );
   }
+
+  createNewUser(username) {
+    return this.db.query(
+      "INSERT INTO user_table(username) VALUES($name)",
+      [username]
+    )
+  }
 }
 
 module.exports = queryRunner;
