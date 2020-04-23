@@ -25,8 +25,8 @@ defaultUser = async (req, res, next) => {
   }
 };
 
-userLogin = async (req, res, next) => {
-  const { userInfo } = req.params;
+userLogin = async (req, res) => {
+  const { userInfo } = req.body;
 
   try {
     const dbRes = await db.loadUserByUsername(userInfo.username)
@@ -37,8 +37,8 @@ userLogin = async (req, res, next) => {
   }
 }
 
-userSignup = async (req, res, next) => {
-  const { userInfo } = req.params;
+userSignup = async (req, res) => {
+  const { userInfo } = req.body;
 
   try {
     const dbRes = await db.createNewUser(userInfo.username)
@@ -49,4 +49,4 @@ userSignup = async (req, res, next) => {
   }
 }
 
-module.exports = { test, defaultUser };
+module.exports = { test, defaultUser, userLogin, userSignup };
