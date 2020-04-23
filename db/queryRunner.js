@@ -32,11 +32,17 @@ class queryRunner {
     );
   }
 
-  createNewUser(username) {
+  createNewUser(username, passHash) {
     return this.db.query(
-      "INSERT INTO user_table(username) VALUES($name)",
-      [username]
+      "INSERT INTO user_table(username, password) VALUES($name, $passHash)",
+      [username, passHash]
     )
+  }
+
+  findUser(username, passHash) {
+    return this.db.query(
+      "SELECT * FROM user_table WHERE user_table.username=$username, user_table.password=$passHash",
+      [username, passHash])
   }
 }
 

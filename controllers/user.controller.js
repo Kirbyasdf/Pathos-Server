@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt-nodejs');
 const pool = require("../db/dbConnection.js");
 const queryRunner = require("../db/queryRunner.js");
 const db = new queryRunner(pool);
@@ -29,9 +30,17 @@ userLogin = async (req, res) => {
   const { userInfo } = req.body;
 
   try {
-    const dbRes = await db.loadUserByUsername(userInfo.username)
+    const user = await db.loadUserByUsername(userInfo.username)
+    const password = await bcrypt.compare(userInfo.password, user.password)
+
+    if (password) {
+      res.status(200).json(user);
+    } else {
+      res.status(401).json({ user: user.username, error: 'Wrong password' })
+    }
+
     const user = dbRes.rows[0];
-    res.status(200).json(user);
+
   } catch (err) {
     console.error(err);
   }
