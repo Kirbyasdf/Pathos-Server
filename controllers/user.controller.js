@@ -29,15 +29,15 @@ defaultUser = async (req, res, next) => {
 };
 
 userLogin = async (req, res) => {
-  const { userInfo } = req.body;
+  const { username, password } = req.body;
 
   try {
-    const user = await db.loadUserByUsername(userInfo.username)
-    const password = await bcrypt.compare(userInfo.password, user.password)
+    const dbRes = await db.loadUserByUsername(username)
+    const user = dbRes.rows[0]
+    const isCorrect = await bcrypt.compare(password, user.password)
 
-    if (password) {
-      const token = jwt.sign({ user }, 'secretKey');
-      res.status(200).json({ authorization: token });
+    if (isCorrect) {
+      res.status(200).json(user);
 
     } else {
       res.status(401).json({ user: user.username, error: 'Wrong username/password' })
