@@ -35,16 +35,15 @@ class queryRunner {
 
   createNewUser(username, passHash) {
     return this.db.query(
-      "INSERT INTO user_table(username, password) VALUES($1, $2)",
+      "INSERT INTO user_table(username, password) VALUES($1, $2) RETURNING id, username",
       [username, passHash]
-    )
+    );
   }
-
-  findUser(username, passHash) {
+  getUserId(username) {
     return this.db.query(
-      "SELECT * FROM user_table WHERE user_table.username=$1, user_table.password=$2",
-      [username, passHash]
-    )
+      "SELECT id FROM user_table WHERE (user_table.username=$1)",
+      [username]
+    );
   }
 }
 

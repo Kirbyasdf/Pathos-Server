@@ -1,6 +1,6 @@
 CREATE TABLE user_table(
   id    SERIAL PRIMARY KEY,
-  username  TEXT NOT NULL,
+  username  TEXT UNIQUE NOT NULL ,
   password TEXT,
   sentiment_rating TEXT,
   avatar_url TEXT,
