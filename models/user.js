@@ -6,23 +6,21 @@ const db = new queryRunner(pool);
 
 class User {
   constructor(username) {
-    this.load(username);
+    this.username = username;
   }
-
-  async load(username) {
-    const dbRes = await db.loadUserByUsername(username);
+  async load() {
+    const dbRes = await db.loadUserByUsername(this.username);
     this.id = dbRes.rows[0].id;
     this.username = dbRes.rows[0].username;
     this.password = dbRes.rows[0].password;
   }
 
-  async create(username, password) {
+  async create(password) {
     const salt = await bcrypt.genSalt(10);
     const passHash = await bcrypt.hash(password, salt);
     try {
-      const dbRes = await db.createNewUser(username, passHash);
-      const user = dbRes.rows[0];
-      return user;
+      const dbRes = await db.createNewUser(this.username, passHash);
+      this.id = dbRes.rows[0].id;
     } catch (err) {
       console.error(err);
     }
@@ -32,8 +30,8 @@ class User {
     return await bcrypt.compare(enteredPassword, this.password);
   }
 
-  async getSignedToken(userId) {
-    return jwt.sign({ id: userId }, process.env.JWT_SECERT, {
+  async getSignedToken() {
+    return jwt.sign({ id: this.id }, process.env.JWT_SECERT, {
       expiresIn: process.env.JWT_EXPIRES,
     });
   }

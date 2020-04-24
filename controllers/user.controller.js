@@ -5,7 +5,7 @@ const User = require("../models/user.js");
 const db = new queryRunner(pool);
 
 const sendTokenResponse = async (user, statusCode, res) => {
-  const token = await new User().getSignedToken(user.id);
+  const token = await user.getSignedToken();
 
   const options = {
     expires: new Date(
@@ -13,8 +13,13 @@ const sendTokenResponse = async (user, statusCode, res) => {
     ),
     httpOnly: true,
   };
+
   if (process.env.NODE_ENV === "production") {
     options.secure = true;
+  }
+
+  if (user.password) {
+    delete user.password;
   }
 
   res
@@ -31,8 +36,9 @@ register = async (req, res) => {
       .json({ sucess: false, message: "Please Provide email/password" });
   }
   try {
-    const newUser = await new User().create(username, password);
-    sendTokenResponse(newUser, 200, res);
+    const user = await new User(username);
+    await user.create(password);
+    sendTokenResponse(user, 200, res);
   } catch (err) {
     console.error(err);
   }
@@ -40,13 +46,23 @@ register = async (req, res) => {
 
 login = async (req, res) => {
   const { username, password } = req.body;
-  if (!username || password) {
-    res.status(400).json({ sucess: false, message: "Invalid Login" });
-  }
+
   try {
-    const user = await new User(username);
-    console.log(user);
-    // user.validate(password) ? "pass" : "fail";
+    if (!username || !password) {
+      res
+        .status(400)
+        .json({ sucess: false, message: "Invalid Login no name or password" });
+    }
+
+    const user = new User(username);
+    await user.load();
+
+    if (!user.validate(password)) {
+      res
+        .status(400)
+        .json({ sucess: false, message: "Invalid Login no name or password" });
+    }
+    sendTokenResponse(user, 200, res);
   } catch (err) {
     console.error(err);
   }
