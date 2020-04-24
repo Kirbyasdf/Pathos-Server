@@ -49,11 +49,10 @@ userLogin = async (req, res) => {
 
 userSignup = async (req, res) => {
   console.log(req.body);
-  const { userInfo } = req.body;
-  console.log(userInfo);
+  const { username, password } = req.body;
 
   try {
-    const newUser = new User(userInfo.username, userInfo.password);
+    const newUser = new User(username, password);
     newUser.save();
 
     console.log(newUser);

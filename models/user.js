@@ -12,12 +12,12 @@ class User {
     static async hashPassword(passwordText) {
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
-        return await bcrypt.hash(plaintextPassword, salt);
+        return await bcrypt.hash(passwordText, salt);
     }
 
     async save() {
         //save to db
-        this.passHash = await this.hashPassword(this.password)
+        this.passHash = await User.hashPassword(this.password)
         return await db.createNewUser(this.username, this.passHash);
     }
 }

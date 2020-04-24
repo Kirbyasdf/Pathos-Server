@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 const userRoutes = require("./routes/user.routes.js");
 const messageRoutes = require("./routes/message.routes.js");
@@ -12,6 +13,8 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 app.use("/users", userRoutes);
 app.use("/messages", messageRoutes);
 app.use("/chatrooms", chatroomRoutes);
