@@ -5,7 +5,7 @@ const router = new Router();
 
 router.route("/test").get(test);
 router.route("/defaultuser/:userCall").get(defaultUser);
-router.route("/login").get(userLogin);
-router.route("/signup").get(userSignup);
+router.route("/login").post(userLogin);
+router.route("/signup").post(userSignup);
 
 module.exports = router;

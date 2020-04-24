@@ -1,10 +1,9 @@
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
 const pool = require("../db/dbConnection.js");
 const queryRunner = require("../db/queryRunner.js");
 const db = new queryRunner(pool);
 
 class User {
-    passHash;
     constructor(username, password) {
         this.username = username;
         this.password = password;
@@ -18,7 +17,7 @@ class User {
 
     async save() {
         //save to db
-        this.passHash = await hashPassword(this.password)
+        this.passHash = await this.hashPassword(this.password)
         return await db.createNewUser(this.username, this.passHash);
     }
 }

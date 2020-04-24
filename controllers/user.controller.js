@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require("../db/dbConnection.js");
 const queryRunner = require("../db/queryRunner.js");
@@ -42,20 +42,21 @@ userLogin = async (req, res) => {
     } else {
       res.status(401).json({ user: user.username, error: 'Wrong username/password' })
     }
-
-    const user = dbRes.rows[0];
-
   } catch (err) {
     console.error(err);
   }
 }
 
 userSignup = async (req, res) => {
+  console.log(req.body);
   const { userInfo } = req.body;
+  console.log(userInfo);
 
   try {
     const newUser = new User(userInfo.username, userInfo.password);
     newUser.save();
+
+    console.log(newUser);
 
     res.status(200).json(newUser);
   } catch (err) {
