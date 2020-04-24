@@ -8,7 +8,6 @@ class User {
     constructor(username, password) {
         this.username = username;
         this.password = password;
-        this.save();
     }
 
     static async hashPassword(passwordText) {
@@ -20,6 +19,8 @@ class User {
     async save() {
         //save to db
         this.passHash = await hashPassword(this.password)
-        await db.createNewUser(this.username, this.passHash);
+        return await db.createNewUser(this.username, this.passHash);
     }
 }
+
+module.exports = User;

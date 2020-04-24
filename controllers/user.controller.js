@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt-nodejs');
+const jwt = require('jsonwebtoken');
 const pool = require("../db/dbConnection.js");
 const queryRunner = require("../db/queryRunner.js");
+const User = require("../models/user.js");
 const db = new queryRunner(pool);
 
 test = async (req, res, next) => {
@@ -34,9 +36,11 @@ userLogin = async (req, res) => {
     const password = await bcrypt.compare(userInfo.password, user.password)
 
     if (password) {
-      res.status(200).json(user);
+      const token = jwt.sign({ user }, 'secretKey');
+      res.status(200).json({ authorization: token });
+
     } else {
-      res.status(401).json({ user: user.username, error: 'Wrong password' })
+      res.status(401).json({ user: user.username, error: 'Wrong username/password' })
     }
 
     const user = dbRes.rows[0];
@@ -50,9 +54,10 @@ userSignup = async (req, res) => {
   const { userInfo } = req.body;
 
   try {
-    const dbRes = await db.createNewUser(userInfo.username)
-    const user = dbRes.rows[0];
-    res.status(200).json(user);
+    const newUser = new User(userInfo.username, userInfo.password);
+    newUser.save();
+
+    res.status(200).json(newUser);
   } catch (err) {
     console.error(err);
   }
