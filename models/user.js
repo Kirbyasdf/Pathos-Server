@@ -9,10 +9,18 @@ class User {
     this.username = username;
   }
   async load() {
-    const dbRes = await db.loadUserByUsername(this.username);
-    this.id = dbRes.rows[0].id;
-    this.username = dbRes.rows[0].username;
-    this.password = dbRes.rows[0].password;
+    try {
+      const dbRes = await db.loadUserByUsername(this.username);
+      if (!dbRes.rows[0].username) {
+        return false;
+      }
+      this.id = dbRes.rows[0].id;
+      this.username = dbRes.rows[0].username;
+      this.password = dbRes.rows[0].password;
+      return true;
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async create(password) {

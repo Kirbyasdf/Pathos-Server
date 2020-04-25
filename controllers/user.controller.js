@@ -49,18 +49,16 @@ login = async (req, res) => {
 
   try {
     if (!username || !password) {
-      res
-        .status(400)
-        .json({ sucess: false, message: "Invalid Login no name or password" });
+      res.status(400).json({ sucess: false, message: "Invalid Login " });
     }
 
     const user = new User(username);
-    await user.load();
+    if (!(await user.load())) {
+      return res.status(400).json({ sucess: false, message: "Invalid Login" });
+    }
 
     if (!user.validate(password)) {
-      res
-        .status(400)
-        .json({ sucess: false, message: "Invalid Login no name or password" });
+      res.status(400).json({ sucess: false, message: "Invalid Login " });
     }
     sendTokenResponse(user, 200, res);
   } catch (err) {
