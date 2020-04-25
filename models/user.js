@@ -1,8 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const pool = require("../db/dbConnection.js");
-const queryRunner = require("../db/queryRunner.js");
-const db = new queryRunner(pool);
+const query = require("../db/query.js");
 
 class User {
   constructor(username) {
@@ -10,7 +8,7 @@ class User {
   }
   async load() {
     try {
-      const dbRes = await db.loadUserByUsername(this.username);
+      const dbRes = await new query().loadUserByUsername(this.username);
       if (!dbRes.rows[0].username) {
         return false;
       }
@@ -27,7 +25,7 @@ class User {
     const salt = await bcrypt.genSalt(10);
     const passHash = await bcrypt.hash(password, salt);
     try {
-      const dbRes = await db.createNewUser(this.username, passHash);
+      const dbRes = await new query().createNewUser(this.username, passHash);
       this.id = dbRes.rows[0].id;
     } catch (err) {
       console.error(err);

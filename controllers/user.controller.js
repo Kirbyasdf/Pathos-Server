@@ -1,8 +1,5 @@
-const bcrypt = require("bcrypt");
-const pool = require("../db/dbConnection.js");
-const queryRunner = require("../db/queryRunner.js");
-const User = require("../models/user.js");
-const db = new queryRunner(pool);
+const User = require("../models/User.js");
+const query = require("../db/query.js");
 
 const sendTokenResponse = async (user, statusCode, res) => {
   const token = await user.getSignedToken();
@@ -38,6 +35,11 @@ register = async (req, res) => {
   try {
     const user = await new User(username);
     await user.create(password);
+    if (!user.id) {
+      res
+        .status(400)
+        .json({ sucess: false, message: "Username already exists" });
+    }
     sendTokenResponse(user, 200, res);
   } catch (err) {
     console.error(err);
@@ -57,7 +59,7 @@ login = async (req, res) => {
       return res.status(400).json({ sucess: false, message: "Invalid Login" });
     }
 
-    if (!user.validate(password)) {
+    if (!(await user.validate(password))) {
       res.status(400).json({ sucess: false, message: "Invalid Login " });
     }
     sendTokenResponse(user, 200, res);
@@ -68,15 +70,6 @@ login = async (req, res) => {
 
 ///testing
 
-test = async (req, res, next) => {
-  try {
-    const dbRes = await db.test();
-    res.json({ message: "user controller working", db: dbRes.rows });
-  } catch (err) {
-    console.error(err);
-  }
-};
-
 defaultUser = async (req, res, next) => {
   const { userCall } = req.params;
 
@@ -86,6 +79,15 @@ defaultUser = async (req, res, next) => {
     const dbRes = await db.loadUserByUsername(userName);
     const user = dbRes.rows[0];
     res.status(200).json(user);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+test = async (req, res, next) => {
+  try {
+    const dbRes = await new query().test();
+    res.json({ message: "user controller working", db: dbRes.rows });
   } catch (err) {
     console.error(err);
   }

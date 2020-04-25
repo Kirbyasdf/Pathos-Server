@@ -1,6 +1,4 @@
-const pool = require("../db/dbConnection.js");
-const queryRunner = require("../db/queryRunner.js");
-const db = new queryRunner(pool);
+const query = require("../db/query.js");
 
 ///TO DO broadcasted messages to the front after they are persisted then  + auto send chat history when thec client hits the default useEffect
 
@@ -18,7 +16,7 @@ const chatRoomSockets = (io) => {
     socket.on("sendMessage", async (message, callback) => {
       try {
         //I am trying to make it so it saves the message then sends it back out to all the clients
-        await db.saveMessage(message);
+        await new query().saveMessage(message);
         socket.broadcast.emit("messageBack", message);
       } catch (err) {
         console.error(err);

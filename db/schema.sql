@@ -9,7 +9,7 @@ CREATE TABLE user_table(
 
 CREATE TABLE chatroom_table(
   id    SERIAL PRIMARY KEY,
-  name  TEXT NOT NULL,
+  name  TEXT UNIQUE NOT NULL,
   average_sentiment TEXT
 );
 

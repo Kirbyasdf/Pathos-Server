@@ -1,6 +1,8 @@
+const pool = require("./dbConnection.js");
+
 class queryRunner {
-  constructor(db) {
-    this.db = db;
+  constructor() {
+    this.db = pool;
   }
 
   test() {
