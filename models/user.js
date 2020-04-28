@@ -37,7 +37,7 @@ class User {
   }
 
   async getSignedToken() {
-    return jwt.sign({ id: this.id }, process.env.JWT_SECERT, {
+    return jwt.sign({ id: this.id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES,
     });
   }

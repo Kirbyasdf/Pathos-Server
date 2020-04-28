@@ -19,54 +19,73 @@ const sendTokenResponse = async (user, statusCode, res) => {
     delete user.password;
   }
 
+  console.log(user);
+
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ sucess: true, token, user });
+    .json({ success: true, token, user });
 };
 
 register = async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
-    res
-      .status(400)
-      .json({ sucess: false, message: "Please Provide email/password" });
+    return res.status(400).json({ success: false, message: "Please provide email/password" });
   }
+
   try {
     const user = await new User(username);
     await user.create(password);
+
     if (!user.id) {
-      res
-        .status(400)
-        .json({ sucess: false, message: "Username already exists" });
+      return res.status(400).json({ success: false, message: "Username already exists" });
     }
+
     sendTokenResponse(user, 200, res);
   } catch (err) {
-    console.error(err);
+    console.error("IN Register: ", err);
   }
 };
 
 login = async (req, res) => {
   const { username, password } = req.body;
-
   try {
     if (!username || !password) {
-      res.status(400).json({ sucess: false, message: "Invalid Login " });
+      return res.status(400).json({ success: false, message: "Invalid Login " });
     }
 
     const user = new User(username);
     if (!(await user.load())) {
-      return res.status(400).json({ sucess: false, message: "Invalid Login" });
+      return res.status(400).json({ success: false, message: "Invalid Login" });
     }
 
-    if (!(await user.validate(password))) {
-      res.status(400).json({ sucess: false, message: "Invalid Login " });
+    if ((await !user.validate(password))) {
+      return res.status(400).json({ success: false, message: "Invalid Login " });
     }
+
     sendTokenResponse(user, 200, res);
+  } catch (err) {
+    console.error("IN login: ", err);
+  }
+};
+
+//might need session middleware? or just send a json of user logging out
+logout = async (req, res) => {
+  try {
+    console.log(req.session);
+    if (req.session) {
+      req.session.destroy(err => {
+        if (err) {
+          return res.status(400).json({ success: false, message: 'Could not log out' });
+        } else {
+          return res.status(200).json({ success: true, message: 'Successfully logged out!' });
+        }
+      });
+    }
   } catch (err) {
     console.error(err);
   }
-};
+}
 
 ///testing
 
