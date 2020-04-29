@@ -12,7 +12,7 @@ test = async (req, res, next) => {
 loadMessageLog = async (req, res, next) => {
   const { chatroom_id } = req.params;
   try {
-    const dbRes = await query.loadMessageLog(chatroom_id);
+    const dbRes = await new query().loadMessageLog(chatroom_id);
     res.status(200).json(dbRes.rows);
   } catch (err) {
     console.error(err);

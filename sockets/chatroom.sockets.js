@@ -17,6 +17,7 @@ const chatRoomSockets = (io) => {
       try {
         //I am trying to make it so it saves the message then sends it back out to all the clients
         await new query().saveMessage(message);
+        console.log('saving a message!')
         socket.broadcast.emit("messageBack", message);
       } catch (err) {
         console.error(err);
