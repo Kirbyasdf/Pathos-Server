@@ -21,6 +21,16 @@ class User {
     }
   }
 
+  static async selectById(id) {
+    try{
+      const dbRes = await new query().selectById("user_table", id)     
+     return dbRes.rows[0]
+    }catch(err){
+      console.log("this is the error")
+      console.warn(err)
+    }
+  }
+
   async create(password) {
     const salt = await bcrypt.genSalt(10);
     const passHash = await bcrypt.hash(password, salt);

@@ -16,6 +16,11 @@ class queryRunner {
     );
   }
 
+  async selectById(table, id){
+    const text = `select * from ${table} where id = $1`
+    return this.db.query(text, [id])    
+  }
+
   loadUserByUsername(user) {
     return this.db.query(
       "SELECT * FROM user_table WHERE user_table.username=$1",

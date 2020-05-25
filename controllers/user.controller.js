@@ -87,6 +87,10 @@ logout = async (req, res) => {
   }
 }
 
+protectedAction = async(req, res)=>{
+  res.json(req.user)
+}
+
 ///testing
 
 defaultUser = async (req, res, next) => {
@@ -112,4 +116,4 @@ test = async (req, res, next) => {
   }
 };
 
-module.exports = { test, defaultUser, login, register };
+module.exports = { test, defaultUser, login, register, protectedAction };
